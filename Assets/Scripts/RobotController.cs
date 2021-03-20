@@ -200,10 +200,10 @@ public class RobotController : MonoBehaviour {
         //headers.Add("Content-Type", "application/json");
         Debug.Log(images[1].Length);
         byte[] postData = Encoding.UTF8.GetBytes("{" +
-            "\"lat\":1," +
-            "\"lng\":1," +
+            "\"lat\":" + examinationScript.latitude + "," +
+            "\"lng\":" + examinationScript.longitude +"," +
             "\"image\":" + "\"" + images[1] + "\"," +
-            "\"estimatedSuverity\":1" +
+            "\"estimatedSuverity\":" + examinationScript.severity  +
             "}");
         using (UnityWebRequest www = UnityWebRequest.Put("http://localhost:8080/api/reports", postData)) {
             www.SetRequestHeader("Content-Type", "application/json");
