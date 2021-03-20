@@ -8,8 +8,8 @@ public class DamageScript : MonoBehaviour
     public Material fixedMaterial;
     private bool reported = false;
     public float severity;
-    float latitude;
-    float longitude;
+    public float latitude;
+    public float longitude;
     MeshRenderer mr;
     MeshCollider collider;
     int damagedLayer;
