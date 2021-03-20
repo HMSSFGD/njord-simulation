@@ -239,10 +239,12 @@ MonoBehaviour:
   focalPoint: {fileID: 0}
   speed: 10
   visionRange: 7.92
-  examineDistance: 4
-  visionWidth: 6.33
+  examineDistance: 5
+  visionWidth: 1.5
+  visionHeight: 5
   rotationSpeed: 20
   rotationPerPicture: 30
+  maxRotation: 45
   botID: 0
   images: []
 --- !u!1 &8193086065670795469

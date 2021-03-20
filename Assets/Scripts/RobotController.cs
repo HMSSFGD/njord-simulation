@@ -20,6 +20,7 @@ public class RobotController : MonoBehaviour {
     public float visionRange;
     public float examineDistance;
     public float visionWidth;
+    public float visionHeight;
     public float rotationSpeed;
     public float rotationPerPicture;
     public float maxRotation;
@@ -103,7 +104,7 @@ public class RobotController : MonoBehaviour {
     }
 
     private void CheckForDamage() {
-        RaycastHit[] hits = Physics.BoxCastAll(cameraParent.transform.position, new Vector3(visionWidth, visionWidth, 0.1f), cam.transform.forward, Quaternion.identity, visionRange);
+        RaycastHit[] hits = Physics.BoxCastAll(cameraParent.transform.position, new Vector3(visionWidth, visionHeight, 0.1f), cam.transform.forward, Quaternion.identity, visionRange);
         foreach (RaycastHit hit in hits) {
             if (hit.transform.gameObject.layer == damageLayer) {
                 if (hit.transform != examinePoint) {
@@ -251,7 +252,7 @@ public class RobotController : MonoBehaviour {
             //Draw a Ray forward from GameObject toward the maximum distance
             Gizmos.DrawRay(cameraParent.transform.position, cam.transform.forward * visionRange);
             //Draw a cube at the maximum distance
-            Gizmos.DrawWireCube(cameraParent.transform.position + cam.transform.forward * visionRange, new Vector3(visionWidth, visionWidth, 0.1f));
+            Gizmos.DrawWireCube(cameraParent.transform.position + cam.transform.forward * visionRange, new Vector3(visionWidth, visionHeight, 0.1f));
             Gizmos.DrawLine(cameraParent.transform.position, cameraParent.transform.position + cam.transform.forward.normalized * visionRange);
         }
     }
