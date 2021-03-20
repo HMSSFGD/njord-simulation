@@ -2,11 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
-
+using UnityEngine.Networking;
+using System.Text;
 
 public enum RobotState {
     Patrolling,
     Examining,
+    Uploading,
+    Backoff,
 }
 public class RobotController : MonoBehaviour {
     public GameObject patrolPointsParent;
@@ -19,6 +22,7 @@ public class RobotController : MonoBehaviour {
     public float visionWidth;
     public float rotationSpeed;
     public float rotationPerPicture;
+    public float maxRotation;
     private List<Transform> patrolPoints = new List<Transform>();
     private int currentPatrolPointIndex;
     private float minDist = 0.5f;
@@ -33,9 +37,17 @@ public class RobotController : MonoBehaviour {
     bool approaching = true;
     private int fileCounter = 0;
     public int botID = 0;
+    bool uploading = false;
+    bool finishedUploading = false;
+    public List<string> images = new List<string>();
+    private float initialY;
+    private float initialDist;
+    bool resetY = false;
+    Vector3 examinePosition;
     // Start is called before the first frame update
     void Start() {
-
+        initialY = transform.position.y;
+        initialDist = Vector3.Distance(transform.position, focalPoint.transform.position);
         int numPoints = patrolPointsParent.transform.childCount;
         for (int i = 0; i < numPoints; i++) {
             patrolPoints.Add(patrolPointsParent.transform.GetChild(i));
@@ -56,6 +68,12 @@ public class RobotController : MonoBehaviour {
             case RobotState.Examining:
                 Examine();
                 break;
+            case RobotState.Uploading:
+                WaitForUpload();
+                break;
+            case RobotState.Backoff:
+                BackOff();
+                break;
             default:
                 break;
         }
@@ -71,6 +89,17 @@ public class RobotController : MonoBehaviour {
         CheckForDamage();
     }
 
+    void WaitForUpload() {
+        if (finishedUploading) {
+            uploading = false;
+            SwitchToBackoff();
+        }
+    }
+
+    private void SwitchToBackoff() {
+        state = RobotState.Backoff;
+    }
+
     private void CheckForDamage() {
         RaycastHit[] hits = Physics.BoxCastAll(cameraParent.transform.position, new Vector3(visionWidth, visionWidth, 0.1f), cam.transform.forward, Quaternion.identity, visionRange);
         foreach (RaycastHit hit in hits) {
@@ -84,7 +113,7 @@ public class RobotController : MonoBehaviour {
                         SwitchToExamine();
                     }
                 }
-                
+
             }
         }
     }
@@ -93,11 +122,12 @@ public class RobotController : MonoBehaviour {
         RaycastHit hit;
         bool environmentCheck = Physics.Raycast(
             cameraParent.transform.position,
-            playerObj.transform.position-cameraParent.transform.position,
+            playerObj.transform.position - cameraParent.transform.position,
             out hit,
             sightRange,
             damageOrHull
         );
+        examinePosition = hit.point;
         return !environmentCheck
             || hit.transform.gameObject.layer == LayerMask.NameToLayer("HullDamage");
     }
@@ -114,18 +144,25 @@ public class RobotController : MonoBehaviour {
 
     }
 
+    private void BackOff() {
+        transform.position += (patrolPoints[currentPatrolPointIndex].position - transform.position).normalized * speed * Time.deltaTime;
+        if (Vector3.Distance(transform.position, patrolPoints[currentPatrolPointIndex].position) < minDist) {
+            SwitchToPatrol();
+        }
+    }
+
     private void Examine() {
         if (approaching) {
-            if (Vector3.Distance(transform.position, examinePoint.position) > examineDistance) {
-                transform.position += (examinePoint.position - transform.position).normalized * speed * Time.deltaTime;
+            if (Vector3.Distance(transform.position, examinePosition) > examineDistance) {
+                transform.position += (examinePosition - transform.position).normalized * speed * Time.deltaTime;
             }
             else {
                 approaching = false;
             }
         }
         else {
-            if (rotation < 120) {
-                transform.RotateAround(examinePoint.position, new Vector3(0, 1, 0), rotationSpeed * Time.deltaTime);
+            if (rotation < maxRotation) {
+                transform.RotateAround(examinePosition, new Vector3(0, 1, 0), rotationSpeed * Time.deltaTime);
                 rotation += rotationSpeed * Time.deltaTime;
                 pictureRotationCounter -= rotationSpeed * Time.deltaTime;
                 if (pictureRotationCounter < 0) {
@@ -135,19 +172,52 @@ public class RobotController : MonoBehaviour {
             }
             else {
                 examinePoint.gameObject.GetComponent<DamageScript>().SetReported(true);
-                SwitchToPatrol();
+                UploadScreenshots();
             }
-            
+
         }
-        
-        
-        
+
+
+
         cameraParent.transform.LookAt(examinePoint.transform);
     }
 
     void UploadScreenshots() {
-        
+        StartCoroutine(Upload());
+        uploading = true;
+        finishedUploading = false;
+        state = RobotState.Uploading;
     }
+
+    IEnumerator Upload() {
+
+        //WWW www = new WWW("http://localhost:8080/api/reports");
+        //Hashtable headers = new Hashtable();
+        //headers.Add("Content-Type", "application/json");
+        byte[] postData = Encoding.UTF8.GetBytes("{" +
+            "\"lat\":1," +
+            "\"lng\":1" +
+            "}");
+        using (UnityWebRequest www = UnityWebRequest.Put("http://localhost:8080/api/reports", postData)) {
+            www.SetRequestHeader("Content-Type", "application/json");
+            www.SetRequestHeader("Accept", "application/json");
+            www.method = UnityWebRequest.kHttpVerbPOST;
+            yield return www.SendWebRequest();
+
+            if (www.result != UnityWebRequest.Result.Success) {
+                Debug.Log(www.responseCode);
+                Debug.Log(www.error);
+                uploading = false;
+                finishedUploading = true;
+            }
+            else {
+                Debug.Log("Form upload complete!");
+                uploading = false;
+                finishedUploading = true;
+            }
+        }
+    }
+
 
     void CamCapture() {
 
@@ -175,7 +245,7 @@ public class RobotController : MonoBehaviour {
             Gizmos.DrawRay(cameraParent.transform.position, cam.transform.forward * visionRange);
             //Draw a cube at the maximum distance
             Gizmos.DrawWireCube(cameraParent.transform.position + cam.transform.forward * visionRange, new Vector3(visionWidth, visionWidth, 0.1f));
-            Gizmos.DrawLine(cameraParent.transform.position, cameraParent.transform.position + cam.transform.forward.normalized*visionRange);
+            Gizmos.DrawLine(cameraParent.transform.position, cameraParent.transform.position + cam.transform.forward.normalized * visionRange);
         }
     }
 }

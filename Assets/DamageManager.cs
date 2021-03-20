@@ -12,10 +12,15 @@ public class DamageManager : MonoBehaviour
     void Start()
     {
         children = GetComponentsInChildren<DamageScript>().OfType<DamageScript>().ToList(); //yes
+        Debug.Log(children.Count);
         foreach (DamageScript kid in children){
-            kid.gameObject.SetActive(Random.Range(0f, 1f) < damageChance);
+            bool damaged = Random.Range(0f, 1f) < damageChance;
+            if (damaged) {
+                Debug.Log("damaged");
+                kid.Damage(); 
+                kid.severity = Random.Range(severityMin, severityMax);
+            }
             Debug.Log("Damage enabled? " + kid.gameObject.activeSelf);
-            kid.severity = Random.Range(severityMin, severityMax);
         }
     }
 

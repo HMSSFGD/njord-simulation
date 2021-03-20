@@ -4,16 +4,24 @@ using UnityEngine;
 
 public class DamageScript : MonoBehaviour
 {
+    public Material damagedMaterial;
+    public Material fixedMaterial;
     private bool reported = false;
     public float severity;
     float latitude;
     float longitude;
-    void Start()
-    {
-        
+    MeshRenderer mr;
+    int damagedLayer;
+    private void Awake() {
+        mr = GetComponent<MeshRenderer>();
+        damagedLayer = LayerMask.NameToLayer("HullDamage");
     }
     public bool IsReported() {
         return reported;
+    }
+    public void Damage() {
+        mr.material = damagedMaterial;
+        gameObject.layer = damagedLayer;
     }
     public void SetReported(bool rep) {
         reported = rep;
