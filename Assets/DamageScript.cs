@@ -11,10 +11,31 @@ public class DamageScript : MonoBehaviour
     float latitude;
     float longitude;
     MeshRenderer mr;
-    MeshCollider collider;
     int damagedLayer;
+    int defaultLayer;
+    public DamageScript(Material _damagedMaterial, Material _fixedMaterial, float _severity, float _latitude, float _longitude, MeshRenderer _mr, bool _enabled){
+        damagedMaterial = _damagedMaterial;
+        fixedMaterial = _fixedMaterial;
+        severity = _severity;
+        latitude = _latitude;
+        longitude = _longitude;
+        mr = _mr;
+        damagedLayer = LayerMask.NameToLayer("HullDamage");
+        defaultLayer = LayerMask.NameToLayer("Default");
+        SetEnabled(_enabled);
+    }
+
+    public void SetEnabled(bool enabled){
+        //mr.gameObject.SetActive(enabled);
+        if (enabled){
+            mr.material = damagedMaterial;
+            mr.gameObject.layer = damagedLayer;
+        } else {
+            mr.material = fixedMaterial;
+            mr.gameObject.layer = defaultLayer;
+        }
+    }
     private void Awake() {
-        collider = GetComponent<MeshCollider>();
         mr = GetComponent<MeshRenderer>();
         damagedLayer = LayerMask.NameToLayer("HullDamage");
     }
@@ -27,10 +48,5 @@ public class DamageScript : MonoBehaviour
     }
     public void SetReported(bool rep) {
         reported = rep;
-    }
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
