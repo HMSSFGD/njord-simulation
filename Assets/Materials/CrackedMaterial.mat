@@ -8,22 +8,21 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: CrackedMaterial
-  m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: f7bdc1cdbc9d6e442941398321faf88b, type: 3}
   m_ShaderKeywords: _DETAIL_MULX2 _NORMALMAP _OCCLUSIONMAP _PARALLAXMAP _RECEIVE_SHADOWS_OFF
     _SPECULAR_SETUP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
-  stringTagMap:
-    RenderType: Transparent
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
   disabledShaderPasses:
   - SHADOWCASTER
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: ba0989cb8c693fa47a974c0c643df94d, type: 3}
+        m_Texture: {fileID: 2800000, guid: b26bc72fdeff1084bb5afbc24df7c727, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -47,7 +46,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: ba0989cb8c693fa47a974c0c643df94d, type: 3}
+        m_Texture: {fileID: 2800000, guid: b26bc72fdeff1084bb5afbc24df7c727, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -60,6 +59,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
         m_Texture: {fileID: 2800000, guid: 7e2022caa4e450a4e9caca2f6d414298, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_ea46ea0e9f8d43129c451e053b2bf1df_Texture_1:
+        m_Texture: {fileID: 2800000, guid: b26bc72fdeff1084bb5afbc24df7c727, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_f6fbab67f9ff48a483ed0cca5772ee34_Texture_1:
+        m_Texture: {fileID: 2800000, guid: ab9661e0e2781364498d7a56bcafac80, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
