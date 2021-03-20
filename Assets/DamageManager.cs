@@ -13,8 +13,8 @@ public class DamageManager : MonoBehaviour
     {
         children = GetComponentsInChildren<DamageScript>().OfType<DamageScript>().ToList(); //yes
         foreach (DamageScript kid in children){
-            kid.enabled = (Random.Range(0f, 1f) < damageChance);
-            Debug.Log("Damage enabled? " + kid.enabled);
+            kid.gameObject.SetActive(Random.Range(0f, 1f) < damageChance);
+            Debug.Log("Damage enabled? " + kid.gameObject.activeSelf);
             kid.severity = Random.Range(severityMin, severityMax);
         }
     }
