@@ -5,6 +5,9 @@ using UnityEngine;
 public class DamageScript : MonoBehaviour
 {
     private bool reported = false;
+    public float severity;
+    float latitude;
+    float longitude;
     void Start()
     {
         

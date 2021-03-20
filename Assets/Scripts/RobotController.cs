@@ -163,7 +163,7 @@ public class RobotController : MonoBehaviour {
 
         var Bytes = Image.EncodeToPNG();
         Destroy(Image);
-
+        //System.Convert.ToBase64String(Bytes);
         File.WriteAllBytes(Application.dataPath + "/BotScreenshots/bot" + botID + "/" + fileCounter + ".png", Bytes);
         fileCounter++;
     }
