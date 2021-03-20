@@ -11,8 +11,10 @@ public class DamageScript : MonoBehaviour
     float latitude;
     float longitude;
     MeshRenderer mr;
+    MeshCollider collider;
     int damagedLayer;
     private void Awake() {
+        collider = GetComponent<MeshCollider>();
         mr = GetComponent<MeshRenderer>();
         damagedLayer = LayerMask.NameToLayer("HullDamage");
     }

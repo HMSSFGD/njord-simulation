@@ -28,6 +28,7 @@ public class RobotController : MonoBehaviour {
     private float minDist = 0.5f;
     private RobotState state = RobotState.Patrolling;
     private Transform examinePoint;
+    private MeshCollider currentCollider;
     private DamageScript examinationScript;
     private LayerMask damageOrHull;
     private int damageLayer;
@@ -44,6 +45,7 @@ public class RobotController : MonoBehaviour {
     private float initialDist;
     bool resetY = false;
     Vector3 examinePosition;
+
     // Start is called before the first frame update
     void Start() {
         initialY = transform.position.y;
@@ -105,7 +107,8 @@ public class RobotController : MonoBehaviour {
         foreach (RaycastHit hit in hits) {
             if (hit.transform.gameObject.layer == damageLayer) {
                 if (hit.transform != examinePoint) {
-                    examinationScript = hit.transform.GetComponent<DamageScript>();
+                    examinationScript = hit.transform.GetComponent<DamageScript>(); 
+                    currentCollider = hit.transform.GetComponent<MeshCollider>();
                 }
                 if (examinationScript != null) {
                     if (!examinationScript.IsReported() && LOSCheck(hit.transform.gameObject, visionRange)) {
@@ -153,8 +156,8 @@ public class RobotController : MonoBehaviour {
 
     private void Examine() {
         if (approaching) {
-            if (Vector3.Distance(transform.position, examinePosition) > examineDistance) {
-                transform.position += (examinePosition - transform.position).normalized * speed * Time.deltaTime;
+            if (Vector3.Distance(transform.position, currentCollider.bounds.center) > examineDistance) {
+                transform.position += (currentCollider.bounds.center - transform.position).normalized * speed * Time.deltaTime;
             }
             else {
                 approaching = false;
@@ -162,7 +165,7 @@ public class RobotController : MonoBehaviour {
         }
         else {
             if (rotation < maxRotation) {
-                transform.RotateAround(examinePosition, new Vector3(0, 1, 0), rotationSpeed * Time.deltaTime);
+                transform.RotateAround(currentCollider.bounds.center, new Vector3(0, 1, 0), rotationSpeed * Time.deltaTime);
                 rotation += rotationSpeed * Time.deltaTime;
                 pictureRotationCounter -= rotationSpeed * Time.deltaTime;
                 if (pictureRotationCounter < 0) {
@@ -179,7 +182,7 @@ public class RobotController : MonoBehaviour {
 
 
 
-        cameraParent.transform.LookAt(examinePoint.transform);
+        cameraParent.transform.LookAt(currentCollider.bounds.center);
     }
 
     void UploadScreenshots() {
