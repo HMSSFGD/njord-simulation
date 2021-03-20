@@ -15,6 +15,9 @@ public class DamageScript : MonoBehaviour
     int damagedLayer;
     private void Awake() {
         collider = GetComponent<MeshCollider>();
+        if (collider.bounds.center.y < -0.1) {
+            gameObject.SetActive(false);
+        }
         mr = GetComponent<MeshRenderer>();
         damagedLayer = LayerMask.NameToLayer("HullDamage");
     }

@@ -189,6 +189,7 @@ public class RobotController : MonoBehaviour {
         StartCoroutine(Upload());
         uploading = true;
         finishedUploading = false;
+        images.Clear();
         state = RobotState.Uploading;
     }
 
@@ -197,9 +198,12 @@ public class RobotController : MonoBehaviour {
         //WWW www = new WWW("http://localhost:8080/api/reports");
         //Hashtable headers = new Hashtable();
         //headers.Add("Content-Type", "application/json");
+        Debug.Log(images[1].Length);
         byte[] postData = Encoding.UTF8.GetBytes("{" +
             "\"lat\":1," +
-            "\"lng\":1" +
+            "\"lng\":1," +
+            "\"image\":" + "\"" + images[1] + "\"," +
+            "\"estimatedSuverity\":1" +
             "}");
         using (UnityWebRequest www = UnityWebRequest.Put("http://localhost:8080/api/reports", postData)) {
             www.SetRequestHeader("Content-Type", "application/json");
@@ -235,9 +239,9 @@ public class RobotController : MonoBehaviour {
         RenderTexture.active = currentRT;
 
         var Bytes = Image.EncodeToPNG();
+        images.Add(System.Convert.ToBase64String(Bytes));
         Destroy(Image);
         //System.Convert.ToBase64String(Bytes);
-        File.WriteAllBytes(Application.dataPath + "/BotScreenshots/bot" + botID + "/" + fileCounter + ".png", Bytes);
         fileCounter++;
     }
 
