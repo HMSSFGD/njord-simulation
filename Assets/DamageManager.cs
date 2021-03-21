@@ -12,6 +12,8 @@ public class DamageManager : MonoBehaviour
     public float severityMax = 1.0f;
     public float centreLat = 54.5f;
     public float centreLong = 45.5f;
+    public float halfLatRange;
+    public float halfLongRange;
     float sphereRadius = 15f;
     float decayTimerMax;
     float decayTimer;
@@ -27,8 +29,8 @@ public class DamageManager : MonoBehaviour
         foreach (DamageScript kid in children){
             bool damaged = Random.Range(0f, 1f) < damageChance;
             Vector3 location = kid.gameObject.GetComponent<MeshCollider>().bounds.center;
-            float lati = centreLat + (location.x-sphereCentre.x)/10;
-            float longi = centreLong + (location.z-sphereCentre.z)/10;
+            float lati = centreLat + halfLatRange * (location.x-sphereCentre.x)/10;
+            float longi = centreLong + halfLongRange * (location.z-sphereCentre.z)/10;
             kid.latitude = lati;
             kid.longitude = longi;
             if (damaged) {
