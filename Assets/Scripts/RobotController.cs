@@ -208,7 +208,7 @@ public class RobotController : MonoBehaviour {
             "\"image\":" + "\"" + images[1] + "\"," +
             "\"estimatedSuverity\":" + examinationScript.severity  +
             "}");
-        using (UnityWebRequest www = UnityWebRequest.Put("https://njord.icedcoffee.dev/api/reports", postData)) {
+        using (UnityWebRequest www = UnityWebRequest.Put("http://localhost:8080/api/reports", postData)) {
             www.SetRequestHeader("Content-Type", "application/json");
             www.SetRequestHeader("Accept", "application/json");
             www.method = UnityWebRequest.kHttpVerbPOST;
