@@ -175,7 +175,9 @@ public class RobotController : MonoBehaviour {
                 }
             }
             else {
-                examinePoint.gameObject.GetComponent<DamageScript>().SetReported(true);
+                DamageScript ds = examinePoint.gameObject.GetComponent<DamageScript>();
+                ds.SetReported(true);
+                ds.Invoke("UnDamage", 15f);
                 UploadScreenshots();
             }
 
