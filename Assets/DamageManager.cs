@@ -6,6 +6,7 @@ public class DamageManager : MonoBehaviour
 {
     // Start is called before the first frame update
     List<DamageScript> children;
+    public GameObject domeParent;
     public float damageChance = 0.1f;
     public float severityMin = 0.0f;
     public float severityMax = 1.0f;
@@ -21,7 +22,7 @@ public class DamageManager : MonoBehaviour
     {
         decayTimer = Random.Range(decayTimerMinRange, decayTimerMaxRange);;
         sphereCentre = transform.position;
-        children = GetComponentsInChildren<DamageScript>().OfType<DamageScript>().ToList(); //yes
+        children = domeParent.GetComponentsInChildren<DamageScript>().OfType<DamageScript>().ToList(); //yes
         Debug.Log(children.Count);
         foreach (DamageScript kid in children){
             bool damaged = Random.Range(0f, 1f) < damageChance;

@@ -238,10 +238,10 @@ MonoBehaviour:
   cameraParent: {fileID: 8193086065256043093}
   focalPoint: {fileID: 0}
   speed: 10
-  visionRange: 7.92
+  visionRange: 10
   examineDistance: 5
   visionWidth: 1.5
-  visionHeight: 5
+  visionHeight: 6
   rotationSpeed: 20
   rotationPerPicture: 30
   maxRotation: 45
