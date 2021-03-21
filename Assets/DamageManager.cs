@@ -12,9 +12,14 @@ public class DamageManager : MonoBehaviour
     public float centreLat = 54.5f;
     public float centreLong = 45.5f;
     float sphereRadius = 15f;
+    float decayTimerMax;
+    float decayTimer;
+    public float decayTimerMinRange = 25.0f;
+    public float decayTimerMaxRange = 35.0f;
     Vector3 sphereCentre;
     void Start()
     {
+        decayTimer = Random.Range(decayTimerMinRange, decayTimerMaxRange);;
         sphereCentre = transform.position;
         children = GetComponentsInChildren<DamageScript>().OfType<DamageScript>().ToList(); //yes
         Debug.Log(children.Count);
@@ -34,9 +39,28 @@ public class DamageManager : MonoBehaviour
         }
     }
 
+    void DecayRandom(){
+        int index = Random.Range(0, children.Count);
+        int startIndex = index;
+        while (children[index].damaged){
+            index = (index+1)%children.Count;
+            Debug.Log("Searching for undamaged index.");
+            if (index == startIndex){
+                Debug.Log("Could not find undamaged panel.");
+                return;
+            }
+        }
+        children[index].Damage();
+    }
+
     // Update is called once per frame
     void Update()
     {
-        
+        decayTimer -= Time.deltaTime;
+        if (decayTimer < 0){
+            DecayRandom();
+            decayTimerMax = Random.Range(decayTimerMinRange, decayTimerMaxRange);
+            decayTimer = decayTimerMax;
+        }
     }
 }

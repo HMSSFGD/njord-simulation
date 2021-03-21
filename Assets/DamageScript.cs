@@ -12,7 +12,9 @@ public class DamageScript : MonoBehaviour
     public float longitude;
     MeshRenderer mr;
     MeshCollider collider;
+    public bool damaged = false;
     int damagedLayer;
+    int fixedLayer;
     private void Awake() {
         collider = GetComponent<MeshCollider>();
         if (collider.bounds.center.y < -0.1) {
@@ -20,13 +22,21 @@ public class DamageScript : MonoBehaviour
         }
         mr = GetComponent<MeshRenderer>();
         damagedLayer = LayerMask.NameToLayer("HullDamage");
+        fixedLayer = LayerMask.NameToLayer("Default");
     }
     public bool IsReported() {
         return reported;
     }
     public void Damage() {
+        damaged = true;
         mr.material = damagedMaterial;
         gameObject.layer = damagedLayer;
+    }
+    public void UnDamage(){
+        damaged = false;
+        mr.material = fixedMaterial;
+        gameObject.layer = fixedLayer;
+        reported = false;
     }
     public void SetReported(bool rep) {
         reported = rep;
